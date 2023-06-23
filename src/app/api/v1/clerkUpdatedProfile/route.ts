@@ -2,9 +2,10 @@ import { mongo } from "@/utils/mongo";
 import { notionInternal } from "@/utils/notion";
 import { stripeServer } from "@/utils/stripe";
 import type { WebhookEvent } from "@clerk/clerk-sdk-node";
-import { NextRequest, NextResponse } from "next/server";
+import { ObjectId } from "mongodb";
+import { NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
 	try {
 		await mongo.connect();
 
@@ -12,11 +13,10 @@ export async function POST(request: NextRequest) {
 		const userCollection = database.collection("User");
 		const stripeCustomerCollection = database.collection("StripeCustomer");
 
-		const body = request.body as any;
-		const evt = body.evt as WebhookEvent;
+		const req = (await request.json()) as WebhookEvent;
 
-		if (evt.type === "user.updated") {
-			const { data } = evt;
+		if (req.type === "user.updated") {
+			const { data } = req;
 
 			const user = await userCollection.findOne({ clerkUserId: data.id });
 
