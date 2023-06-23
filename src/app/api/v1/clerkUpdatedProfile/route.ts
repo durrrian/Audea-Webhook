@@ -1,5 +1,6 @@
 import { mongo } from "@/utils/mongo";
 import { notionInternal } from "@/utils/notion";
+import { stripeServer } from "@/utils/stripe";
 import type { WebhookEvent } from "@clerk/clerk-sdk-node";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +9,8 @@ export async function POST(request: NextRequest) {
 		await mongo.connect();
 
 		const database = mongo.db("app-v1");
-		const collection = database.collection("User");
+		const userCollection = database.collection("User");
+		const stripeCustomerCollection = database.collection("StripeCustomer");
 
 		const body = request.body as any;
 		const evt = body.evt as WebhookEvent;
@@ -16,7 +18,7 @@ export async function POST(request: NextRequest) {
 		if (evt.type === "user.updated") {
 			const { data } = evt;
 
-			const user = await collection.findOne({ clerkUserId: data.id });
+			const user = await userCollection.findOne({ clerkUserId: data.id });
 
 			if (!user) return NextResponse.error();
 
@@ -27,7 +29,7 @@ export async function POST(request: NextRequest) {
 			//it is impossible that a user can have no email
 			if (!email) return NextResponse.error();
 
-			const response = await collection.updateOne(
+			const response = await userCollection.updateOne(
 				{ _id: user._id },
 				{
 					email,
@@ -74,6 +76,25 @@ export async function POST(request: NextRequest) {
 					},
 				},
 			});
+
+			const stripeCustomer = await stripeCustomerCollection.findOne({
+				clerkUserId: data.id,
+			});
+
+			if (stripeCustomer) {
+				await stripeServer.customers.update(stripeCustomer.stripeCustomerId, {
+					email,
+					name: `${data.first_name} ${data.last_name}`,
+				});
+
+				await stripeCustomerCollection.updateOne(
+					{ _id: user._id },
+					{
+						email,
+						name: `${data.first_name} ${data.last_name}`,
+					}
+				);
+			}
 
 			return NextResponse.json(response);
 		} else {

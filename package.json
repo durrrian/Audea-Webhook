@@ -11,6 +11,8 @@
   "dependencies": {
     "@clerk/clerk-sdk-node": "^4.10.7",
     "@notionhq/client": "^2.2.5",
+    "@stripe/react-stripe-js": "^2.1.1",
+    "@stripe/stripe-js": "^1.54.1",
     "@types/node": "20.3.1",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
@@ -21,6 +23,7 @@
     "next": "13.4.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "stripe": "^12.10.0",
     "typescript": "5.1.3"
   }
 }
