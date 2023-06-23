@@ -30,11 +30,13 @@ export async function POST(request: Request) {
 			if (!email) return NextResponse.error();
 
 			const response = await userCollection.updateOne(
-				{ _id: user._id },
+				{ _id: new ObjectId(user._id) },
 				{
-					email,
-					firstName: data.first_name,
-					lastName: data.last_name,
+					$set: {
+						email,
+						firstName: data.first_name,
+						lastName: data.last_name,
+					},
 				}
 			);
 
@@ -88,10 +90,12 @@ export async function POST(request: Request) {
 				});
 
 				await stripeCustomerCollection.updateOne(
-					{ _id: user._id },
+					{ _id: new ObjectId(stripeCustomer._id) },
 					{
-						email,
-						name: `${data.first_name} ${data.last_name}`,
+						$set: {
+							email,
+							name: `${data.first_name} ${data.last_name}`,
+						},
 					}
 				);
 			}
