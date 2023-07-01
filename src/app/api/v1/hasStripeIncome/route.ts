@@ -27,19 +27,35 @@ export async function POST(request: Request) {
 			if (event.type === "charge.succeeded") {
 				const data = event.data.object as Stripe.Charge;
 
+				const customerName = await (async () => {
+					if (data.customer) {
+						const customerResponse = (await stripe.customers.retrieve(
+							data.customer.toString()
+						)) as Stripe.Customer;
+
+						if (customerResponse) {
+							return customerResponse.name!;
+						} else {
+							return data.billing_details.name!;
+						}
+					} else {
+						return data.billing_details.name!;
+					}
+				})();
+
 				await resend.sendEmail({
 					from: "Audea (NO REPLY) <no_reply@audea.id>",
 					to: data.billing_details.email!,
 					subject: "Thank you for purchasing Audea!",
 					html: `
-					<p>Heyy ${data.billing_details.name}!👋🏼</p>
+					<p>Heyy ${customerName}!👋🏼</p>
 
-                    <p>Just wanted to drop you a quick note to say a big thanks for purchasing a premium membership for Audea. It means the world to me and us here at Audea.</p>
+				    <p>Just wanted to drop you a quick note to say a big thanks for purchasing a premium membership for Audea. It means the world to me and us here at Audea.</p>
 
 					<p>You will receive your payment receipt in another email :)</p>
-        
-                    <p>If you have any assistance or feedback to share, just reply or write me an email. I'm just one click away!</p>
-                    `,
+
+				    <p>If you have any assistance or feedback to share, just reply or write me an email. I'm just one click away!</p>
+				    `,
 				});
 			}
 
