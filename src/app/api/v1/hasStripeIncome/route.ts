@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
 				    <p>Just wanted to drop you a quick note to say a big thanks for purchasing a premium membership for Audea. It means the world to me and us here at Audea.</p>
 
-					<p>You will receive your payment receipt in another email :)</p>
+					<p>You should've already received your receipt in another email :)</p>
 
 				    <p>If you have any assistance or feedback to share, I'm just one click away! Just reply to this email and I'll make sure to get back to you.</p>
 				    `,
