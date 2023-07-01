@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 				})();
 
 				await resend.sendEmail({
-					from: "Audea (NO REPLY) <no_reply@audea.id>",
+					from: "Furqon @ Audea <furqon@audea.id>",
 					to: data.billing_details.email!,
 					subject: "Thank you for purchasing Audea!",
 					html: `
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
 					<p>You will receive your payment receipt in another email :)</p>
 
-				    <p>If you have any assistance or feedback to share, just reply or write me an email. I'm just one click away!</p>
+				    <p>If you have any assistance or feedback to share, I'm just one click away! Just reply to this email and I'll make sure to get back to you.</p>
 				    `,
 				});
 			}
