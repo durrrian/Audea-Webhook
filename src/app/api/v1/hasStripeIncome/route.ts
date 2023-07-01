@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 					to: data.billing_details.email!,
 					subject: "Thank you for purchasing Audea!",
 					html: `
-					<p>Heyy ${data.billing_details.name}!</p>
+					<p>Heyy ${data.billing_details.name}!👋🏼</p>
 
                     <p>Just wanted to drop you a quick note to say a big thanks for purchasing a premium membership for Audea. It means the world to me and us here at Audea.</p>
 
