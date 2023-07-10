@@ -36,6 +36,7 @@ export async function POST(request: Request) {
 						email,
 						firstName: data.first_name,
 						lastName: data.last_name,
+						username: data.username,
 					},
 				}
 			);
