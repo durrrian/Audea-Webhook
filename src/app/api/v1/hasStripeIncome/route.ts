@@ -80,7 +80,7 @@ export async function POST(request: Request) {
 							title: [
 								{
 									text: {
-										content: "Stripe income (unadjusted)",
+										content: "Stripe income from Audea (unadjusted)",
 									},
 								},
 							],
